@@ -2,7 +2,7 @@
 import express from "express";
 import { auth, db } from "../firebase-config.js";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, addDoc, updateDoc } from "firebase/firestore";
 
 
 const router = express.Router();
@@ -48,6 +48,48 @@ router.post("/login", async (req, res) => {
       res.status(400).json({ message: "Erro ao enviar e-mail de recuperação", error: error.message });
     }
   });
+
+  //Cadastrar clientes
+  router.post("/cadastrar", async (req, res) => {
+    try {
+      const {
+        nome,
+        email,
+        telefone,
+        cidade,
+        nascimento,
+        produto,
+        categoria,
+        quantidade,
+        preco,
+        dataCompra,
+        duracao
+      } = req.body;
+  
+      const novoCliente = {
+        nome,
+        email,
+        telefone,
+        cidade,
+        nascimento,
+        ultimaCompra: {
+          produto,
+          categoria,
+          quantidade: Number(quantidade),
+          preco: Number(preco),
+          dataCompra,
+          duracao: Number(duracao),
+        },
+        criadoEm: new Date().toISOString()
+      };
+  
+      const docRef = await addDoc(collection(db, "clientes"), novoCliente);
+  
+      res.status(201).json({ message: "Cliente cadastrado com sucesso!", id: docRef.id });
+    } catch (error) {
+      res.status(500).json({ message: "Erro ao cadastrar cliente", error: error.message });
+    }
+  });
   
 //Listar clientes cadastrados
 router.get("/listar-clientes", async (req, res) => {
@@ -65,6 +107,39 @@ router.get("/listar-clientes", async (req, res) => {
       res.status(500).json({ message: "Erro ao listar clientes", error: error.message });
     }
   });
+
+  //editar os clientes quando houver uma recompra
+  router.put('/editar-compra/:id', async (req, res) => {
+    const clienteId = req.params.id;
+    const {
+      recompra,
+      produto,
+      categoria,
+      quantidade,
+      preco,
+      dataCompra,
+      duracao
+    } = req.body;
+  
+    try {
+      const clienteRef = doc(db, 'clientes', clienteId);
+  
+      await updateDoc(clienteRef, {
+        recompra,
+        produto,
+        categoria,
+        quantidade,
+        preco,
+        dataCompra,
+        duracao
+      });
+  
+      res.status(200).json({ message: 'Dados de recompra atualizados com sucesso.' });
+    } catch (error) {
+      res.status(500).json({ message: 'Erro ao atualizar cliente', error: error.message });
+    }
+  });
+  
  
 
  
