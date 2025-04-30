@@ -1,0 +1,6 @@
+# Arquivos de configuração sensíveis do firebase
+.env
+
+# Pastas do Node.js
+node_modules/
+
