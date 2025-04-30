@@ -25,7 +25,7 @@ router.post("/login", async (req, res) => {
 });
 
  // registrar Usuarios no sistema
- router.post("/register", async (req, res) => {
+ router.post("/registrar", async (req, res) => {
     const { email, password } = req.body;
   
     try {
@@ -38,7 +38,7 @@ router.post("/login", async (req, res) => {
 
 
    //recuperar senha
-   router.post("/recover-password", async (req, res) => {
+   router.post("/recuperar-senha", async (req, res) => {
     const { email } = req.body;
   
     try {
@@ -50,7 +50,7 @@ router.post("/login", async (req, res) => {
   });
   
 //Listar clientes cadastrados
-router.get("/list-client", async (req, res) => {
+router.get("/listar-clientes", async (req, res) => {
     try {
       const clientesSnapshot = await getDocs(collection(db, "clientes")); // nome da coleção no Firestore
       const listaClientes = [];
