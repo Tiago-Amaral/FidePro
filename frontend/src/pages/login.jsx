@@ -20,7 +20,7 @@ function LoginPage() {
       });
 
       console.log("Login bem-sucedido:", res.data.user);
-      alert("Login bem-sucedido!");
+      alert("Login bem-sucedido!"); // alterar 
     } catch (err) {
       setErro("Email ou senha incorretos");
     } finally {
